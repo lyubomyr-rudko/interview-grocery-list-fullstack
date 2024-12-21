@@ -14,9 +14,27 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(cuid())
-  username String @unique @db.VarChar(100)
-  password String @db.VarChar(100)
-  email    String @unique @db.VarChar(100)
-  name     String @db.VarChar(100)
+  id           String        @id @default(cuid())
+  username     String        @unique @db.VarChar(100)
+  password     String        @db.VarChar(100)
+  email        String        @unique @db.VarChar(100)
+  name         String        @db.VarChar(100)
+  groceryItems GroceryItem[] @relation("UserGroceryItems")
+}
+
+enum GroceryItemStatus {
+  RANOUT
+  HAVE
+}
+
+model GroceryItem {
+  id        String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String            @db.VarChar(200)
+  quantity  Int?              @default(0)
+  priority  Int?              @default(5)
+  status    GroceryItemStatus @default(RANOUT)
+  createdAt DateTime          @default(now()) @db.Timestamptz()
+  updatedAt DateTime          @updatedAt @db.Timestamptz()
+  userId    String
+  User      User?             @relation("UserGroceryItems", fields: [userId], references: [id])
 }

@@ -7,15 +7,15 @@ import { useState } from 'react'
 import { Card, CardContent, CardHeader, IconButton } from '@mui/material'
 import Container from '@mui/material/Container'
 import { Add, Edit, Save } from '@mui/icons-material'
-import { QueryClientProvider } from '@tanstack/react-query'
-
 import GroceryList from '@components/GroceryList'
-import { queryClient } from '@utils/client'
 import GroceryForm from '@components/GroceryForm'
+import { useUser } from 'hooks/useAuthorisation'
+import AuthForm from '@components/AuthForm'
 
 function App() {
   const [openForm, setOpenForm] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
+  const { data: userData } = useUser()
 
   const handleEditClick = () => {
     setIsEditing(!isEditing)
@@ -25,9 +25,13 @@ function App() {
     setOpenForm(true)
   }
 
+  console.log('~~> userData', userData)
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <Container>
+    <Container>
+      {!userData ? (
+        <AuthForm />
+      ) : (
         <Card sx={{ my: 4 }} variant="outlined">
           <CardHeader
             title="Grocery List"
@@ -45,8 +49,8 @@ function App() {
             <GroceryForm openForm={openForm} setOpenForm={setOpenForm} />
           </CardContent>
         </Card>
-      </Container>
-    </QueryClientProvider>
+      )}
+    </Container>
   )
 }
 

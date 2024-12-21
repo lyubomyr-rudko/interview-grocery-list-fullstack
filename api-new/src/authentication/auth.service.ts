@@ -33,14 +33,15 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    console.log('~~>', user);
+
     return {
-      token: this.jwtService.sign({ username: user.username }),
+      token: this.jwtService.sign({ username: user.username, id: user.id }),
     };
   }
 
   async register(registerDto: RegisterUserDto): Promise<any> {
     const createdUser = new User();
-    console.log('1~~>', registerDto);
 
     createdUser.name = registerDto.username;
     createdUser.email = registerDto.username;
@@ -49,10 +50,20 @@ export class AuthService {
 
     const user = await this.userService.createUser(createdUser);
 
-    console.log('2~~>', user);
+    console.log('~~>', user);
 
     return {
-      token: this.jwtService.sign({ username: user.username }),
+      token: this.jwtService.sign({ username: user.username, id: user.id }),
+    };
+  }
+
+  async getUser(token: string): Promise<any> {
+    const { username, id } = this.jwtService.verify(token);
+
+    return {
+      id,
+      username,
+      token,
     };
   }
 }

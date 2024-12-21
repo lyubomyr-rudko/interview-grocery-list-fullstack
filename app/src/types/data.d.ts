@@ -12,3 +12,15 @@ interface GroceryFormItem {
   name: string
   quantity?: number
 }
+
+interface RegisterUser {
+  email: string
+  password: string
+  username: string | null
+  name: string | null
+}
+
+interface LoginUser {
+  username: string
+  password: string
+}
