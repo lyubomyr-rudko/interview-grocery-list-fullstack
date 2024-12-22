@@ -31,3 +31,28 @@ export const createGroceryItem = async (groceryItem: GroceryFormItem, token: str
 
   return response.data
 }
+
+export const updateGroceryItem = async (groceryItem: GroceryItem, token: string) => {
+  const response = await ky
+    .put(`${env.API_URL}/grocery/${groceryItem.id}`, {
+      json: groceryItem,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .json<{ data: GroceryItem }>()
+
+  return response.data
+}
+
+export const deleteGroceryItem = async (id: string, token: string) => {
+  const response = await ky
+    .delete(`${env.API_URL}/grocery/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .json<{ data: GroceryItem }>()
+
+  return response.data
+}

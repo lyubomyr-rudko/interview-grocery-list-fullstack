@@ -10,13 +10,29 @@ import {
   Paper,
   IconButton,
   TextField,
+  debounce,
 } from '@mui/material'
 import { Delete } from '@mui/icons-material'
 
-import { useGroceryList } from 'hooks/useGrocery'
+import { useDeleteGrocery, useGroceryList, useUpdateGrocery } from 'hooks/useGrocery'
 
 const GroceryList: FC<{ isEditing?: boolean }> = ({ isEditing }) => {
   const { data, isLoading, isError, error } = useGroceryList()
+  const { mutateAsync: deleteGroceryItem } = useDeleteGrocery()
+  const { mutateAsync: updateGroceryItem } = useUpdateGrocery()
+
+  const handleDelete = (item: GroceryItem) => async () => {
+    await deleteGroceryItem(item.id)
+  }
+  const handleToggleHave = (item: GroceryItem) => async () => {
+    const newStatus = item.status == 'HAVE' ? 'WANT' : ('HAVE' as const)
+    await updateGroceryItem({ ...item, status: newStatus })
+  }
+  const handleQuantityChange = (item: GroceryItem) =>
+    debounce((event: React.ChangeEvent<HTMLInputElement>) => {
+      const quantity = parseInt(event.target.value, 10)
+      updateGroceryItem({ ...item, quantity })
+    }, 500)
 
   if (isLoading) return <div>Loading...</div>
   if (isError) return <div>Error: {error.message}</div>
@@ -36,13 +52,19 @@ const GroceryList: FC<{ isEditing?: boolean }> = ({ isEditing }) => {
           {data?.map(item => (
             <TableRow key={item.id}>
               <TableCell>{item.name}</TableCell>
-              <TableCell>{isEditing ? <TextField value={item.quantity} /> : item.quantity}</TableCell>
               <TableCell>
-                <Checkbox checked={item.status === 'HAVE'} />
+                {isEditing ? (
+                  <TextField defaultValue={item.quantity} onChange={handleQuantityChange(item)} />
+                ) : (
+                  item.quantity
+                )}
+              </TableCell>
+              <TableCell>
+                <Checkbox checked={item.status === 'HAVE'} onChange={handleToggleHave(item)} />
               </TableCell>
               {isEditing && (
                 <TableCell>
-                  <IconButton>
+                  <IconButton onClick={handleDelete(item)}>
                     <Delete />
                   </IconButton>
                 </TableCell>

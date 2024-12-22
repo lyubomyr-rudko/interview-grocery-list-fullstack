@@ -40,8 +40,6 @@ export class AuthController {
 
       return response.status(200).json(result);
     } catch (error) {
-      console.log('~~> error', error);
-
       return response.status(500).json({ error: error.message });
     }
   }

@@ -13,6 +13,10 @@ interface GroceryFormItem {
   quantity?: number
 }
 
+interface GroceryItemUpdate extends GroceryFormItem {
+  id: string
+}
+
 interface RegisterUser {
   email: string
   password: string

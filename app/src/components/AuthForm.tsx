@@ -1,6 +1,7 @@
 import { Box, Button, Grid, Paper, TextField, Typography } from '@mui/material'
 import { useUserLogin, useUserRegister } from 'hooks/useAuthorisation'
-import { FormEventHandler, useState } from 'react'
+import { useForm, Controller, FieldErrors } from 'react-hook-form'
+import { useState } from 'react'
 
 const styles = {
   Paper: {
@@ -11,41 +12,49 @@ const styles = {
   },
 } as const
 
+type SignInFormValues = {
+  username: string
+  password: string
+}
+
+type SignUpFormValues = {
+  name: string
+  email: string
+  username: string
+  password: string
+}
+
 const AuthForm = () => {
-  const { mutateAsync: userRegister } = useUserRegister()
+  const { mutateAsync: userRegister, error: apiError } = useUserRegister()
   const { mutateAsync: userLogin } = useUserLogin()
-  const [isSignIn, setIsSignIn] = useState(false)
+  const [isSignIn, setIsSignIn] = useState(true)
 
-  const onRegister: FormEventHandler<HTMLFormElement> = form => {
-    form.preventDefault()
-    const formData = new FormData(form.currentTarget)
-    const email = formData.get('email') as string
-    const password = formData.get('password') as string
-    const name = formData.get('name') as string
-    const username = formData.get('username') as string
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<SignInFormValues | SignUpFormValues>({
+    defaultValues: {
+      username: '',
+      password: '',
+      ...(isSignIn ? {} : { name: '', email: '' }),
+    },
+  })
 
-    if (email && password) {
-      userRegister({
-        email,
-        password,
-        name,
-        username,
-      })
+  const onSubmit = async (data: SignInFormValues | SignUpFormValues) => {
+    if (isSignIn) {
+      const { username, password } = data as SignInFormValues
+      if (username && password) {
+        await userLogin({ username, password })
+      }
+    } else {
+      const { name, email, username, password } = data as SignUpFormValues
+      if (email && password) {
+        await userRegister({ name, email, username, password })
+      }
     }
-  }
-
-  const onSignIn: FormEventHandler<HTMLFormElement> = form => {
-    form.preventDefault()
-    const formData = new FormData(form.currentTarget)
-    const password = formData.get('password') as string
-    const username = formData.get('username') as string
-
-    if (password && username) {
-      userLogin({
-        password,
-        username,
-      })
-    }
+    reset() // Reset form after submission
   }
 
   return (
@@ -57,22 +66,83 @@ const AuthForm = () => {
           </Typography>
           <Box
             component="form"
-            onSubmit={isSignIn ? onSignIn : onRegister}
+            onSubmit={handleSubmit(onSubmit)}
             sx={{
               display: 'flex',
               flexFlow: 'column',
               mt: 1,
             }}
           >
-            {!isSignIn ? (
+            {!isSignIn && (
               <>
-                <TextField label="name" name="name" required margin="normal" />
-                <TextField label="email" name="email" required margin="normal" />
+                <Controller
+                  name="name"
+                  control={control}
+                  rules={{ required: 'Name is required' }}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label="Name"
+                      margin="normal"
+                      error={!!(errors as FieldErrors<SignUpFormValues>).name}
+                      helperText={(errors as FieldErrors<SignUpFormValues>).name?.message}
+                    />
+                  )}
+                />
+                <Controller
+                  name="email"
+                  control={control}
+                  rules={{
+                    required: 'Email is required',
+                    pattern: {
+                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                      message: 'Invalid email address',
+                    },
+                  }}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label="Email"
+                      margin="normal"
+                      error={!!(errors as FieldErrors<SignUpFormValues>).email}
+                      helperText={(errors as FieldErrors<SignUpFormValues>).email?.message}
+                    />
+                  )}
+                />
               </>
-            ) : null}
-            <TextField label="username" name="username" required margin="normal" />
-            <TextField label="password" name="password" type="password" required margin="normal" />
-
+            )}
+            <Controller
+              name="username"
+              control={control}
+              rules={{ required: 'Username is required' }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Username"
+                  margin="normal"
+                  error={!!errors.username}
+                  helperText={errors.username?.message}
+                />
+              )}
+            />
+            <Controller
+              name="password"
+              control={control}
+              rules={{ required: 'Password is required' }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Password"
+                  type="password"
+                  margin="normal"
+                  error={!!errors.password}
+                  helperText={errors.password?.message}
+                />
+              )}
+            />
+            <Typography variant="body2" color="error">
+              {apiError?.message}
+            </Typography>
             <Button
               type="submit"
               fullWidth
@@ -90,7 +160,10 @@ const AuthForm = () => {
               sx={{
                 mt: 2,
               }}
-              onClick={() => setIsSignIn(!isSignIn)}
+              onClick={() => {
+                setIsSignIn(!isSignIn)
+                reset() // Reset form when switching modes
+              }}
             >
               {isSignIn ? 'Sign Up' : 'Sign In'}
             </Button>

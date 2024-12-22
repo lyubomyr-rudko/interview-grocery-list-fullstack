@@ -4,18 +4,19 @@ import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 
 import { useState } from 'react'
-import { Card, CardContent, CardHeader, IconButton } from '@mui/material'
+import { Button, Card, CardContent, CardHeader, IconButton } from '@mui/material'
 import Container from '@mui/material/Container'
 import { Add, Edit, Save } from '@mui/icons-material'
 import GroceryList from '@components/GroceryList'
 import GroceryForm from '@components/GroceryForm'
-import { useUser } from 'hooks/useAuthorisation'
+import { useUser, useUserLogout } from 'hooks/useAuthorisation'
 import AuthForm from '@components/AuthForm'
 
 function App() {
   const [openForm, setOpenForm] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const { data: userData } = useUser()
+  const { mutateAsync: handleUserLogout } = useUserLogout()
 
   const handleEditClick = () => {
     setIsEditing(!isEditing)
@@ -24,8 +25,6 @@ function App() {
   const handleFormOpen = () => {
     setOpenForm(true)
   }
-
-  console.log('~~> userData', userData)
 
   return (
     <Container>
@@ -41,6 +40,9 @@ function App() {
                 <IconButton onClick={handleFormOpen}>
                   <Add />
                 </IconButton>
+                <Button variant="contained" color="secondary" onClick={handleUserLogout}>
+                  Logout
+                </Button>
               </>
             }
           />

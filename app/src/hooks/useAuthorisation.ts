@@ -11,8 +11,6 @@ export const useUserRegister = () => {
     mutationFn: async (user: RegisterUser) => {
       const response = await registerUser(user)
 
-      console.log('~~> response', response)
-
       localStorage.setItem(AUTH_TOKEN_NAME, response.token)
 
       return response
@@ -45,8 +43,6 @@ export const useUserLogout = () => {
     mutationKey: ['logout'],
     mutationFn: async () => {
       localStorage.removeItem(AUTH_TOKEN_NAME)
-    },
-    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user'] })
     },
   })
@@ -59,17 +55,15 @@ export const useUser = () => {
       const token = localStorage.getItem(AUTH_TOKEN_NAME) || ''
 
       if (!token) {
-        return Promise.reject(new Error('Token not found'))
+        return null
       }
 
       try {
-        const response = await getUser(token)
-
-        return response
+        return getUser(token)
       } catch (error) {
         localStorage.removeItem(AUTH_TOKEN_NAME)
 
-        return error
+        return null
       }
     },
   })

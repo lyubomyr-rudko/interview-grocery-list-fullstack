@@ -33,8 +33,6 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    console.log('~~>', user);
-
     return {
       token: this.jwtService.sign({ username: user.username, id: user.id }),
     };
@@ -49,8 +47,6 @@ export class AuthService {
     createdUser.password = bcrypt.hashSync(registerDto.password, 10);
 
     const user = await this.userService.createUser(createdUser);
-
-    console.log('~~>', user);
 
     return {
       token: this.jwtService.sign({ username: user.username, id: user.id }),
