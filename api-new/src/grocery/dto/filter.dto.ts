@@ -12,4 +12,14 @@ export class FilterGroceryDto {
   @IsEnum(GroceryItemStatus)
   @IsOptional()
   status?: GroceryItemStatus;
+
+  @IsNumber()
+  @Transform(({ value }) => (value ? Number(value) : undefined))
+  @IsOptional()
+  take?: number;
+
+  @IsNumber()
+  @Transform(({ value }) => (value ? Number(value) : undefined))
+  @IsOptional()
+  skip?: number;
 }

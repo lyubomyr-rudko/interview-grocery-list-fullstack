@@ -26,6 +26,10 @@ function App() {
     setOpenForm(true)
   }
 
+  const handleLogout = () => {
+    handleUserLogout()
+  }
+
   return (
     <Container>
       {!userData ? (
@@ -40,7 +44,7 @@ function App() {
                 <IconButton onClick={handleFormOpen}>
                   <Add />
                 </IconButton>
-                <Button variant="contained" color="secondary" onClick={handleUserLogout}>
+                <Button variant="contained" color="secondary" onClick={handleLogout}>
                   Logout
                 </Button>
               </>

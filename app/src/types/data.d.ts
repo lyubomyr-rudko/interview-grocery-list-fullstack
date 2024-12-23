@@ -17,6 +17,12 @@ interface GroceryItemUpdate extends GroceryFormItem {
   id: string
 }
 
+interface GroceryListFilters {
+  priority?: number
+  status?: string
+  perPage?: number
+}
+
 interface RegisterUser {
   email: string
   password: string

@@ -1,6 +1,8 @@
 + create
 + delete
 + update/mark done 
--> auth form - move to react-hook-form
++ auth form - move to react-hook-form
+-> filter by status, priority
 - pagination 
-- 
+- docker, docker-compose
+- deployment

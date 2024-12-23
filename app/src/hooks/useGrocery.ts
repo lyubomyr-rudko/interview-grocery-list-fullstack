@@ -5,7 +5,7 @@ import { queryClient } from '@utils/client'
 
 const AUTH_TOKEN_NAME = 'token'
 
-export const useGroceryList = (params?: { priority?: number; status?: string; perPage?: number }, enabled = true) => {
+export const useGroceryList = (params?: GroceryListFilters, enabled = true) => {
   return useQuery({
     queryKey: ['groceryList'],
     queryFn: async () => {

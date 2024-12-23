@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import {
   Table,
   TableBody,
@@ -15,9 +15,12 @@ import {
 import { Delete } from '@mui/icons-material'
 
 import { useDeleteGrocery, useGroceryList, useUpdateGrocery } from 'hooks/useGrocery'
+import GroceryListFilters from './GroceryListFilters'
 
 const GroceryList: FC<{ isEditing?: boolean }> = ({ isEditing }) => {
-  const { data, isLoading, isError, error } = useGroceryList()
+  const [listParams, setListParams] = useState<GroceryListFilters>({})
+  const { data, isLoading, isError, error } = useGroceryList(listParams)
+
   const { mutateAsync: deleteGroceryItem } = useDeleteGrocery()
   const { mutateAsync: updateGroceryItem } = useUpdateGrocery()
 
@@ -38,42 +41,46 @@ const GroceryList: FC<{ isEditing?: boolean }> = ({ isEditing }) => {
   if (isError) return <div>Error: {error.message}</div>
 
   return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Quantity</TableCell>
-            <TableCell>Status</TableCell>
-            {isEditing && <TableCell>Action</TableCell>}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data?.map(item => (
-            <TableRow key={item.id}>
-              <TableCell>{item.name}</TableCell>
-              <TableCell>
-                {isEditing ? (
-                  <TextField defaultValue={item.quantity} onChange={handleQuantityChange(item)} />
-                ) : (
-                  item.quantity
-                )}
-              </TableCell>
-              <TableCell>
-                <Checkbox checked={item.status === 'HAVE'} onChange={handleToggleHave(item)} />
-              </TableCell>
-              {isEditing && (
-                <TableCell>
-                  <IconButton onClick={handleDelete(item)}>
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              )}
+    <>
+      <GroceryListFilters onFilterChange={setListParams} />
+
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Quantity</TableCell>
+              <TableCell>Status</TableCell>
+              {isEditing && <TableCell>Action</TableCell>}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {data?.map(item => (
+              <TableRow key={item.id}>
+                <TableCell>{item.name}</TableCell>
+                <TableCell>
+                  {isEditing ? (
+                    <TextField defaultValue={item.quantity} onChange={handleQuantityChange(item)} />
+                  ) : (
+                    item.quantity
+                  )}
+                </TableCell>
+                <TableCell>
+                  <Checkbox checked={item.status === 'HAVE'} onChange={handleToggleHave(item)} />
+                </TableCell>
+                {isEditing && (
+                  <TableCell>
+                    <IconButton onClick={handleDelete(item)}>
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                )}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   )
 }
 
