@@ -15,11 +15,13 @@ import {
 import { Delete } from '@mui/icons-material'
 
 import { useDeleteGrocery, useGroceryList, useUpdateGrocery } from 'hooks/useGrocery'
-import GroceryListFilters from './GroceryListFilters'
+import Filters from './GroceryListFilters'
 
 const GroceryList: FC<{ isEditing?: boolean }> = ({ isEditing }) => {
-  const [listParams, setListParams] = useState<GroceryListFilters>({})
+  const [listParams, setListParams] = useState<GroceryFilters>({})
   const { data, isLoading, isError, error } = useGroceryList(listParams)
+
+  console.log('~~> listParams', listParams)
 
   const { mutateAsync: deleteGroceryItem } = useDeleteGrocery()
   const { mutateAsync: updateGroceryItem } = useUpdateGrocery()
@@ -28,7 +30,7 @@ const GroceryList: FC<{ isEditing?: boolean }> = ({ isEditing }) => {
     await deleteGroceryItem(item.id)
   }
   const handleToggleHave = (item: GroceryItem) => async () => {
-    const newStatus = item.status == 'HAVE' ? 'WANT' : ('HAVE' as const)
+    const newStatus = item.status == 'HAVE' ? 'RANOUT' : ('HAVE' as const)
     await updateGroceryItem({ ...item, status: newStatus })
   }
   const handleQuantityChange = (item: GroceryItem) =>
@@ -42,7 +44,12 @@ const GroceryList: FC<{ isEditing?: boolean }> = ({ isEditing }) => {
 
   return (
     <>
-      <GroceryListFilters onFilterChange={setListParams} />
+      <Filters
+        onFilterChange={(params: GroceryFilters) => {
+          console.log(params)
+          setListParams(params)
+        }}
+      />
 
       <TableContainer component={Paper}>
         <Table>

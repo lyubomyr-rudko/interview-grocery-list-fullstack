@@ -3,7 +3,7 @@ interface GroceryItem {
   name: string
   quantity?: number
   priority?: number
-  status?: 'HAVE' | 'WANT'
+  status?: 'HAVE' | 'RANOUT'
   createdAt?: string
   updatedAt?: string
 }
@@ -17,7 +17,7 @@ interface GroceryItemUpdate extends GroceryFormItem {
   id: string
 }
 
-interface GroceryListFilters {
+interface GroceryFilters {
   priority?: number
   status?: string
   perPage?: number

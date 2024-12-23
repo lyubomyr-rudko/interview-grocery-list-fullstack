@@ -5,11 +5,13 @@ import { queryClient } from '@utils/client'
 
 const AUTH_TOKEN_NAME = 'token'
 
-export const useGroceryList = (params?: GroceryListFilters, enabled = true) => {
+export const useGroceryList = (params?: GroceryFilters, enabled = true) => {
   return useQuery({
-    queryKey: ['groceryList'],
+    queryKey: ['groceryList', params],
     queryFn: async () => {
       const token = localStorage.getItem(AUTH_TOKEN_NAME) || ''
+
+      console.log('~~> params', { params })
 
       try {
         const list = await getGroceryList({ ...params }, token)
