@@ -2,7 +2,7 @@
 + delete
 + update/mark done 
 + auth form - move to react-hook-form
--> filter by status, priority
-- pagination 
++ filter by status
++ pagination 
 - docker, docker-compose
 - deployment

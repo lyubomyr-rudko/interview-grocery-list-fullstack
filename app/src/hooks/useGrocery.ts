@@ -11,12 +11,10 @@ export const useGroceryList = (params?: GroceryFilters, enabled = true) => {
     queryFn: async () => {
       const token = localStorage.getItem(AUTH_TOKEN_NAME) || ''
 
-      console.log('~~> params', { params })
-
       try {
-        const list = await getGroceryList({ ...params }, token)
+        const [list, total] = await getGroceryList({ ...params }, token)
 
-        return list
+        return [list, total] as const
       } catch (error) {
         queryClient.invalidateQueries({ queryKey: ['user'] })
         throw error

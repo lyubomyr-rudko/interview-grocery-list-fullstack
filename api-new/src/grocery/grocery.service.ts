@@ -7,10 +7,12 @@ import { CreateGroceryDto, UpdateGroceryDto } from './dto/grocery.dto';
 export class GroceryService {
   constructor(private prisma: PrismaService) {}
 
-  async filterGroceries(filter: FilterGroceryDto, userId: string) {
-    /**
-     * @todo add pagination
-     */
+  async filterGroceries(
+    filterWithPagination: FilterGroceryDto,
+    userId: string,
+  ) {
+    const { take = 10, skip = 0, ...filter } = filterWithPagination;
+
     const where = {
       userId,
       ...filter,
@@ -19,9 +21,13 @@ export class GroceryService {
     const groceries = await this.prisma.groceryItem.findMany({
       where,
       orderBy: [{ priority: 'asc' }, { name: 'asc' }],
+      take,
+      skip,
     });
 
-    return groceries;
+    const total = await this.prisma.groceryItem.count({ where });
+
+    return [groceries, total];
   }
 
   async createGrocery(createGroceryDto: CreateGroceryDto, userId: string) {

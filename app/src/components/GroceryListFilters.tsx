@@ -18,12 +18,12 @@ const GroceryListFilters: React.FC<GroceryListFiltersProps> = ({ onFilterChange 
   const handleFilterChange = (event: SelectChangeEvent<string>) => {
     const value = event.target.value
     setStatus(value)
-    onFilterChange({ status: value })
+    onFilterChange({ status: value, skip: 0 })
   }
 
   return (
     <FilterContaienr>
-      <StyledFormControl sx={{ m: 1, minWidth: 120 }}>
+      <StyledFormControl>
         <InputLabel id={`status-label-${id}`}>Status</InputLabel>
         <Select labelId={`status-label-${id}`} label="Status" value={status} onChange={handleFilterChange}>
           {statusOptions.map(option => (

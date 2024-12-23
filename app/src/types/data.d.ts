@@ -18,9 +18,10 @@ interface GroceryItemUpdate extends GroceryFormItem {
 }
 
 interface GroceryFilters {
+  take: number
+  skip: number
   priority?: number
   status?: string
-  perPage?: number
 }
 
 interface RegisterUser {

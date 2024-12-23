@@ -14,9 +14,9 @@ export const getGroceryList = async (
         Authorization: `Bearer ${token}`,
       },
     })
-    .json<{ data: GroceryItem[] }>()
+    .json<{ data: GroceryItem[]; total: number }>()
 
-  return response.data
+  return [response.data, response.total] as const
 }
 
 export const createGroceryItem = async (groceryItem: GroceryFormItem, token: string) => {

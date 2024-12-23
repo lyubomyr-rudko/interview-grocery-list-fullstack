@@ -34,10 +34,14 @@ export class GroceryController {
     @Req() request: RequestWithUser,
   ) {
     const userId = request?.user?.id;
-    const data = await this.groceryService.filterGroceries(filter, userId);
+    const [data, total] = await this.groceryService.filterGroceries(
+      filter,
+      userId,
+    );
 
     return {
       data,
+      total,
     };
   }
 

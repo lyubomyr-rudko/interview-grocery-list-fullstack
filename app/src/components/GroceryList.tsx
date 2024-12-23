@@ -16,12 +16,19 @@ import { Delete } from '@mui/icons-material'
 
 import { useDeleteGrocery, useGroceryList, useUpdateGrocery } from 'hooks/useGrocery'
 import Filters from './GroceryListFilters'
+import Pagination from './GroceryListPagination'
+
+const ITEMS_PER_PAGE = 10
 
 const GroceryList: FC<{ isEditing?: boolean }> = ({ isEditing }) => {
-  const [listParams, setListParams] = useState<GroceryFilters>({})
-  const { data, isLoading, isError, error } = useGroceryList(listParams)
+  const [listParams, setListParams] = useState<GroceryFilters>({
+    skip: 0,
+    take: ITEMS_PER_PAGE,
+  })
+  const { data: dataAndTotal, isLoading, isError, error } = useGroceryList(listParams)
 
-  console.log('~~> listParams', listParams)
+  const data = dataAndTotal?.[0] || []
+  const totalCount = dataAndTotal?.[1] || 0
 
   const { mutateAsync: deleteGroceryItem } = useDeleteGrocery()
   const { mutateAsync: updateGroceryItem } = useUpdateGrocery()
@@ -39,18 +46,16 @@ const GroceryList: FC<{ isEditing?: boolean }> = ({ isEditing }) => {
       updateGroceryItem({ ...item, quantity })
     }, 500)
 
+  const handleFilterChange = (filters: Partial<GroceryFilters>) => {
+    setListParams({ ...listParams, ...filters, skip: 0 })
+  }
+
   if (isLoading) return <div>Loading...</div>
   if (isError) return <div>Error: {error.message}</div>
 
   return (
     <>
-      <Filters
-        onFilterChange={(params: GroceryFilters) => {
-          console.log(params)
-          setListParams(params)
-        }}
-      />
-
+      <Filters onFilterChange={handleFilterChange} />
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -87,6 +92,12 @@ const GroceryList: FC<{ isEditing?: boolean }> = ({ isEditing }) => {
           </TableBody>
         </Table>
       </TableContainer>
+      <Pagination
+        total={totalCount}
+        take={listParams.take}
+        skip={listParams.skip}
+        onFilterChange={handleFilterChange}
+      />
     </>
   )
 }
