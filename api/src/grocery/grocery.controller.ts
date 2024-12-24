@@ -1,27 +1,12 @@
-import { Request } from 'express';
-import { JwtAuthGuard } from 'src/authentication/auth.guard';
+import { Request } from 'express'
+import { JwtAuthGuard } from 'src/authentication/auth.guard'
 
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Query,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
-import { GroceryService } from './grocery.service';
-import { FilterGroceryDto } from './dto/filter.dto';
-import {
-  CreateGroceryDto,
-  GroceryItemIdDto,
-  UpdateGroceryDto,
-} from './dto/grocery.dto';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common'
+import { GroceryService } from './grocery.service'
+import { FilterGroceryDto } from './dto/filter.dto'
+import { CreateGroceryDto, GroceryItemIdDto, UpdateGroceryDto } from './dto/grocery.dto'
 
-type RequestWithUser = Request & { user: { id: string } };
+type RequestWithUser = Request & { user: { id: string } }
 
 @Controller('grocery')
 export class GroceryController {
@@ -29,37 +14,25 @@ export class GroceryController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  async filterGroceries(
-    @Query() filter: FilterGroceryDto,
-    @Req() request: RequestWithUser,
-  ) {
-    const userId = request?.user?.id;
-    const [data, total] = await this.groceryService.filterGroceries(
-      filter,
-      userId,
-    );
+  async filterGroceries(@Query() filter: FilterGroceryDto, @Req() request: RequestWithUser) {
+    const userId = request?.user?.id
+    const [data, total] = await this.groceryService.filterGroceries(filter, userId)
 
     return {
       data,
       total,
-    };
+    }
   }
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  async createGrocery(
-    @Body() createGroceryDto: CreateGroceryDto,
-    @Req() request: RequestWithUser,
-  ) {
-    const userId = request?.user?.id;
-    const data = await this.groceryService.createGrocery(
-      createGroceryDto,
-      userId,
-    );
+  async createGrocery(@Body() createGroceryDto: CreateGroceryDto, @Req() request: RequestWithUser) {
+    const userId = request?.user?.id
+    const data = await this.groceryService.createGrocery(createGroceryDto, userId)
 
     return {
       data,
-    };
+    }
   }
 
   @Put(':id')
@@ -69,29 +42,22 @@ export class GroceryController {
     @Body() updateGroceryDto: UpdateGroceryDto,
     @Req() request: RequestWithUser,
   ) {
-    const userId = request?.user?.id;
-    const data = await this.groceryService.updateGrocery(
-      id,
-      updateGroceryDto,
-      userId,
-    );
+    const userId = request?.user?.id
+    const data = await this.groceryService.updateGrocery(id, updateGroceryDto, userId)
 
     return {
       data,
-    };
+    }
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
-  async deleteGrocery(
-    @Param() { id }: GroceryItemIdDto,
-    @Req() request: RequestWithUser,
-  ) {
-    const userId = request?.user?.id;
-    const data = await this.groceryService.deleteGrocery(id, userId);
+  async deleteGrocery(@Param() { id }: GroceryItemIdDto, @Req() request: RequestWithUser) {
+    const userId = request?.user?.id
+    const data = await this.groceryService.deleteGrocery(id, userId)
 
     return {
       data,
-    };
+    }
   }
 }

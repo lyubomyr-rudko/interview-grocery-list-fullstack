@@ -54,7 +54,6 @@ const groceryItems = [
 ]
 
 async function main() {
-  // Upsert user to ensure it exists
   const user = await prisma.user.upsert({
     where: { email: 'testuser@example.com' },
     update: {},
@@ -66,13 +65,12 @@ async function main() {
     },
   })
 
-  // Create grocery items associated with the user
   await Promise.all(
     groceryItems.map(item =>
       prisma.groceryItem.create({
         data: {
           ...item,
-          userId: user.id, // Link grocery items to the user
+          userId: user.id,
         },
       }),
     ),

@@ -15,7 +15,7 @@ import AuthForm from '@components/AuthForm'
 function App() {
   const [openForm, setOpenForm] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
-  const { data: userData } = useUser()
+  const { data: userData, isLoading } = useUser()
   const { mutateAsync: handleUserLogout } = useUserLogout()
 
   const handleEditClick = () => {
@@ -29,6 +29,8 @@ function App() {
   const handleLogout = () => {
     handleUserLogout()
   }
+
+  if (isLoading) return <div>Loading...</div>
 
   return (
     <Container>
