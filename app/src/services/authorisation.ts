@@ -2,16 +2,6 @@ import ky, { HTTPError } from 'ky'
 
 import { env } from '@constants/env'
 
-// export const registerUser = async (user: { email: string; password: string }) => {
-//   const response = await ky
-//     .post(`${env.API_URL}/auth/register`, {
-//       json: user,
-//     })
-//     .json<{ token: string }>()
-
-//   return response
-// }
-
 export const registerUser = async (user: { email: string; password: string }) => {
   try {
     const response = await ky

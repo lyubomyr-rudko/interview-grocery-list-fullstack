@@ -1,6 +1,6 @@
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require('@prisma/client')
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 const priority = {
   HIGH: 1,
@@ -8,7 +8,7 @@ const priority = {
   LOW: 3,
   LOWEST: 4,
   NONE: 5,
-};
+}
 
 const groceryItems = [
   {
@@ -51,7 +51,7 @@ const groceryItems = [
     quantity: 0,
     priority: priority.MEDIUM,
   },
-];
+]
 
 async function main() {
   // Upsert user to ensure it exists
@@ -64,11 +64,11 @@ async function main() {
       username: 'testuser',
       name: 'Test User',
     },
-  });
+  })
 
   // Create grocery items associated with the user
   await Promise.all(
-    groceryItems.map((item) =>
+    groceryItems.map(item =>
       prisma.groceryItem.create({
         data: {
           ...item,
@@ -76,15 +76,15 @@ async function main() {
         },
       }),
     ),
-  );
+  )
 }
 
 main()
   .then(async () => {
-    await prisma.$disconnect();
+    await prisma.$disconnect()
   })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
+  .catch(async e => {
+    console.error(e)
+    await prisma.$disconnect()
+    process.exit(1)
+  })
