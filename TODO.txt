@@ -4,9 +4,18 @@
 + auth form - move to react-hook-form
 + filter by status
 + pagination 
-- add priority
++ add priority
     + form
-    -> table 
+    + table 
     + api  (sorting check)
+- add Entry View
+    - routing
+    - detail view
+    - status toggle
+    - history View
+    - api for history
+        - prisma schema, one to many
+        - on edit - add to history
+        - get item details (with history)
 - docker, docker-compose
 - deployment
