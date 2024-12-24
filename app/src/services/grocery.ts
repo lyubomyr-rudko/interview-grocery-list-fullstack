@@ -1,12 +1,13 @@
 import ky from 'ky'
 
 import { env } from '@constants/env'
+import { cleanObject } from './helpers'
 
 export const getGroceryList = async (
   params: { priority?: number; status?: string; perPage?: number },
   token: string,
 ) => {
-  const searchParams = new URLSearchParams(params as Record<string, string>)
+  const searchParams = new URLSearchParams(cleanObject(params) as Record<string, string>)
   const response = await ky
     .get(`${env.API_URL}/grocery`, {
       searchParams,

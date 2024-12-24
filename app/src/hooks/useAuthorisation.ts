@@ -59,7 +59,7 @@ export const useUser = () => {
       }
 
       try {
-        return getUser(token)
+        return await getUser(token)
       } catch (error) {
         localStorage.removeItem(AUTH_TOKEN_NAME)
 

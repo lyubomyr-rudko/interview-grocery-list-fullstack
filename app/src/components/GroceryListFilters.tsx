@@ -3,23 +3,23 @@ import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } fro
 import styled from '@emotion/styled'
 
 interface GroceryListFiltersProps {
-  onFilterChange: (filters: Partial<GroceryFilters>) => void
+  onChange: (filters: Partial<GroceryFilters>) => void
+  value: GroceryFilters
 }
 
-const GroceryListFilters: React.FC<GroceryListFiltersProps> = ({ onFilterChange }) => {
-  const [status, setStatus] = React.useState<string>('')
+const GroceryListFilters: React.FC<GroceryListFiltersProps> = ({ onChange, value }) => {
   const id = useId()
   const statusOptions = [
-    { value: '', label: 'Select Status' },
+    { value: 'all', label: 'All' },
     { value: 'HAVE', label: 'Have' },
     { value: 'RANOUT', label: 'Ran Out' },
   ]
 
   const handleFilterChange = (event: SelectChangeEvent<string>) => {
-    const value = event.target.value
-    setStatus(value)
-    onFilterChange({ status: value, skip: 0 })
+    const value = event.target.value === 'all' ? '' : event.target.value
+    onChange({ status: value, skip: 0 })
   }
+  const status = value.status || 'all'
 
   return (
     <FilterContaienr>

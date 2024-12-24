@@ -4,5 +4,9 @@
 + auth form - move to react-hook-form
 + filter by status
 + pagination 
+- add priority
+    + form
+    -> table 
+    + api  (sorting check)
 - docker, docker-compose
 - deployment

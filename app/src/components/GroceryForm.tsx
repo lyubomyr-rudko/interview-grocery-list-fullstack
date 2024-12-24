@@ -39,6 +39,21 @@ const GroceryForm: FC<{ openForm: boolean; setOpenForm: (openForm: boolean) => v
             defaultValue={0}
             render={({ field }) => <TextField {...field} margin="dense" label="Quantity" fullWidth />}
           />
+          <Controller
+            name="priority"
+            control={control}
+            defaultValue={1}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                InputProps={{ inputProps: { min: 1, max: 5 } }}
+                type="number"
+                margin="dense"
+                label="Priority"
+                fullWidth
+              />
+            )}
+          />
           <DialogActions>
             <Button onMouseDown={handleFormClose}>Cancel</Button>
             <Button type="submit">Submit</Button>

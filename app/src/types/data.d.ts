@@ -11,6 +11,7 @@ interface GroceryItem {
 interface GroceryFormItem {
   name: string
   quantity?: number
+  priority: number
 }
 
 interface GroceryItemUpdate extends GroceryFormItem {

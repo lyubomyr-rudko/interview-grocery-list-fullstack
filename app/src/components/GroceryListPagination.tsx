@@ -12,7 +12,7 @@ const GroceryListPagination: React.FC<PaginationProps> = ({ total, take, skip, o
   const page = skip / take + 1
   const totalPages = Math.ceil(total / take)
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+  const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     onFilterChange({ skip: (value - 1) * take, take })
   }
 

@@ -45,9 +45,14 @@ const GroceryList: FC<{ isEditing?: boolean }> = ({ isEditing }) => {
       const quantity = parseInt(event.target.value, 10)
       updateGroceryItem({ ...item, quantity })
     }, 500)
+  const handlePriorityChange = (item: GroceryItem) =>
+    debounce((event: React.ChangeEvent<HTMLInputElement>) => {
+      const priority = parseInt(event.target.value, 10)
+      updateGroceryItem({ ...item, priority })
+    }, 500)
 
   const handleFilterChange = (filters: Partial<GroceryFilters>) => {
-    setListParams({ ...listParams, ...filters, skip: 0 })
+    setListParams({ ...listParams, ...filters })
   }
 
   if (isLoading) return <div>Loading...</div>
@@ -55,12 +60,13 @@ const GroceryList: FC<{ isEditing?: boolean }> = ({ isEditing }) => {
 
   return (
     <>
-      <Filters onFilterChange={handleFilterChange} />
+      <Filters onChange={handleFilterChange} value={listParams} />
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
+              <TableCell>Priority</TableCell>
               <TableCell>Quantity</TableCell>
               <TableCell>Status</TableCell>
               {isEditing && <TableCell>Action</TableCell>}
@@ -70,6 +76,13 @@ const GroceryList: FC<{ isEditing?: boolean }> = ({ isEditing }) => {
             {data?.map(item => (
               <TableRow key={item.id}>
                 <TableCell>{item.name}</TableCell>
+                <TableCell>
+                  {isEditing ? (
+                    <TextField defaultValue={item.priority} onChange={handlePriorityChange(item)} />
+                  ) : (
+                    item.priority
+                  )}
+                </TableCell>
                 <TableCell>
                   {isEditing ? (
                     <TextField defaultValue={item.quantity} onChange={handleQuantityChange(item)} />
