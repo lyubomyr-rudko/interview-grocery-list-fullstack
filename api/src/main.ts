@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core'
-import { Logger, ValidationPipe } from '@nestjs/common'
+import { Logger, ValidationPipe, VersioningType } from '@nestjs/common'
 import { NestExpressApplication } from '@nestjs/platform-express'
 import { ConfigService } from '@nestjs/config'
 import { NextFunction, Request, Response } from 'express'
@@ -15,10 +15,11 @@ async function bootstrap() {
   })
 
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }))
-  // app.enableVersioning({
-  //   type: VersioningType.URI,
-  // })
-  app.setGlobalPrefix('api/v1')
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1',
+  })
+  app.setGlobalPrefix('api')
 
   app.use((req: Request, res: Response, next: NextFunction) => {
     res.removeHeader('x-powered-by')
