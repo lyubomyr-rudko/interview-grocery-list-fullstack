@@ -34,9 +34,31 @@ export class GroceryService {
   }
 
   async updateGrocery(id: string, updateGroceryDto: UpdateGroceryDto, userId: string) {
-    return this.prisma.groceryItem.update({
+    const result = await this.prisma.groceryItem.update({
       where: { id, userId },
       data: updateGroceryDto,
+    })
+
+    await this.prisma.groceryItemHistory.create({
+      data: {
+        status: result.status,
+        groceryItemId: id,
+      },
+    })
+
+    return result
+  }
+
+  async getGroceryItem(id: string, userId: string) {
+    return this.prisma.groceryItem.findFirst({
+      where: { id, userId },
+      include: {
+        history: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+        },
+      },
     })
   }
 

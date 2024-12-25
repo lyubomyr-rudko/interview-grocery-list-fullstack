@@ -1,6 +1,12 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 
-import { createGroceryItem, deleteGroceryItem, getGroceryList, updateGroceryItem } from '@services/grocery'
+import {
+  createGroceryItem,
+  deleteGroceryItem,
+  getGroceryItem,
+  getGroceryList,
+  updateGroceryItem,
+} from '@services/grocery'
 import { queryClient } from '@utils/client'
 
 const AUTH_TOKEN_NAME = 'token'
@@ -21,6 +27,22 @@ export const useGroceryList = (params?: GroceryFilters, enabled = true) => {
       }
     },
     enabled,
+  })
+}
+
+export const useGroceryItem = (id: string) => {
+  return useQuery({
+    queryKey: ['groceryItem', id],
+    queryFn: async () => {
+      const token = localStorage.getItem(AUTH_TOKEN_NAME) || ''
+
+      try {
+        return getGroceryItem(id, token)
+      } catch (error) {
+        queryClient.invalidateQueries({ queryKey: ['user'] })
+        throw error
+      }
+    },
   })
 }
 
@@ -46,8 +68,9 @@ export const useUpdateGrocery = () => {
 
       return updateGroceryItem(groceryItem, token)
     },
-    onSuccess: () => {
+    onSuccess: (_data, groceryItem) => {
       queryClient.invalidateQueries({ queryKey: ['groceryList'] })
+      queryClient.invalidateQueries({ queryKey: ['groceryItem', groceryItem.id] }) // Refresh the specific grocery item
     },
   })
 }

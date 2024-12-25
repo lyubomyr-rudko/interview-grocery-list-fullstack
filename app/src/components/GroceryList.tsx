@@ -10,6 +10,7 @@ import {
   Paper,
   IconButton,
   TextField,
+  Link,
   debounce,
 } from '@mui/material'
 import { Delete } from '@mui/icons-material'
@@ -20,7 +21,10 @@ import Pagination from './GroceryListPagination'
 
 const ITEMS_PER_PAGE = 10
 
-const GroceryList: FC<{ isEditing?: boolean }> = ({ isEditing }) => {
+const GroceryList: FC<{ isEditing?: boolean; onItemClick?: (item: GroceryItem) => void }> = ({
+  isEditing,
+  onItemClick,
+}) => {
   const [listParams, setListParams] = useState<GroceryFilters>({
     skip: 0,
     take: ITEMS_PER_PAGE,
@@ -75,7 +79,16 @@ const GroceryList: FC<{ isEditing?: boolean }> = ({ isEditing }) => {
           <TableBody>
             {data?.map(item => (
               <TableRow key={item.id}>
-                <TableCell>{item.name}</TableCell>
+                <TableCell>
+                  <Link
+                    sx={{
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => onItemClick?.(item)}
+                  >
+                    {item.name}
+                  </Link>
+                </TableCell>
                 <TableCell>
                   {isEditing ? (
                     <TextField defaultValue={item.priority} onChange={handlePriorityChange(item)} />

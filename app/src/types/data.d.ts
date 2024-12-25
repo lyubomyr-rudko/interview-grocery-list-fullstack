@@ -6,6 +6,13 @@ interface GroceryItem {
   status?: 'HAVE' | 'RANOUT'
   createdAt?: string
   updatedAt?: string
+  history?: GroceryItemHistory[]
+}
+
+interface GroceryItemHistory {
+  id: string
+  status: 'HAVE' | 'RANOUT'
+  createdAt: string
 }
 
 interface GroceryFormItem {

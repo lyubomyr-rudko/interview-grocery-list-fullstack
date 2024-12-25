@@ -8,14 +8,15 @@
     + form
     + table 
     + api  (sorting check)
-- add Entry View
-    - routing
-    - detail view
-    - status toggle
-    - history View
-    - api for history
-        - prisma schema, one to many
-        - on edit - add to history
-        - get item details (with history)
++ add Entry View
+    + dialog
+        + use...
+        + detail view
+        + status toggle
+        + history View
+    + api for history
+        + prisma schema, one to many
+        + on edit - add to history
+        + get item details (with history)
 - docker, docker-compose
 - deployment

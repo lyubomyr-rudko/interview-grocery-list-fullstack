@@ -20,6 +20,18 @@ export const getGroceryList = async (
   return [response.data, response.total] as const
 }
 
+export const getGroceryItem = async (id: string, token: string) => {
+  const response = await ky
+    .get(`${env.API_URL}/grocery/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .json<{ data: GroceryItem }>()
+
+  return response.data
+}
+
 export const createGroceryItem = async (groceryItem: GroceryFormItem, token: string) => {
   const response = await ky
     .post(`${env.API_URL}/grocery`, {

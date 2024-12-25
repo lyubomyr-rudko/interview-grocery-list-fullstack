@@ -50,6 +50,17 @@ export class GroceryController {
     }
   }
 
+  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  async getGroceryItem(@Param() { id }: GroceryItemIdDto, @Req() request: RequestWithUser) {
+    const userId = request?.user?.id
+    const data = await this.groceryService.getGroceryItem(id, userId)
+
+    return {
+      data,
+    }
+  }
+
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   async deleteGrocery(@Param() { id }: GroceryItemIdDto, @Req() request: RequestWithUser) {

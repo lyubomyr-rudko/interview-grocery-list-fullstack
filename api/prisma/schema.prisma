@@ -32,13 +32,23 @@ model User {
 }
 
 model GroceryItem {
-  id        String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name      String            @db.VarChar(200)
-  quantity  Int?              @default(0)
-  priority  Int?              @default(5)
-  status    GroceryItemStatus @default(RANOUT)
-  createdAt DateTime          @default(now()) @db.Timestamptz()
-  updatedAt DateTime          @updatedAt @db.Timestamptz()
+  id        String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String               @db.VarChar(200)
+  quantity  Int?                 @default(0)
+  priority  Int?                 @default(5)
+  status    GroceryItemStatus    @default(RANOUT)
+  createdAt DateTime             @default(now()) @db.Timestamptz()
+  updatedAt DateTime             @updatedAt @db.Timestamptz()
   userId    String
-  User      User              @relation("UserGroceryItems", fields: [userId], references: [id])
+  User      User                 @relation("UserGroceryItems", fields: [userId], references: [id])
+  history   GroceryItemHistory[]
+}
+
+model GroceryItemHistory {
+  id            String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  status        GroceryItemStatus
+  createdAt     DateTime          @default(now()) @db.Timestamptz()
+  updatedAt     DateTime          @updatedAt @db.Timestamptz()
+  groceryItemId String            @db.Uuid
+  GroceryItem   GroceryItem       @relation(fields: [groceryItemId], references: [id])
 }
